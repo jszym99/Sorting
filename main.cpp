@@ -1,7 +1,7 @@
 #include <iostream>
 #include "sort.h"
 
-//! Function printing table contents
+/*//! Function printing table contents
 template<typename TYPE>
 void printTab(TYPE * tab, int Size) {
     for (int i = 0; i < Size; i++)
@@ -12,7 +12,7 @@ void printTab(TYPE * tab, int Size) {
 template void printTab<int> (int *, int);
 template void printTab<float> (float *, int);
 template void printTab<double> (double *, int);
-template void printTab<char> (char *, int);
+template void printTab<char> (char *, int);*/
 
 
 /*//! Quicksort sorting
@@ -62,7 +62,7 @@ int main() {
     float data2[] {1, 4.8, 6, -1.1, 6, -5, 9, 2, 0.5, -4 };
     char data3[] {'a', 'g', 't', 'n', 'l', 'i','p','s','b', 'w',};
     int dataSize = 10;
-    std::cout << "Before sorting: ";
+    /*std::cout << "Before sorting: ";
     printTab(data, dataSize);
     std::cout << "After sorting: ";
     quicksort<int> (data, dataSize);
@@ -78,5 +78,12 @@ int main() {
     printTab(data3, dataSize);
     quicksort<char> (data3, dataSize);
     std::cout << "After sorting: ";
-    printTab(data3, dataSize);
+    printTab(data3, dataSize);*/
+
+    std::cout << "Before sorting: ";
+    printTab(data, dataSize);
+    std::cout << "After sorting: ";
+    mergesort<int> (data, dataSize);
+    printTab(data, dataSize);
+
 }
