@@ -52,7 +52,11 @@ void quicksort(TYPE *data, int dataSize) {
             pivot = i;
 
         // Swap and move iterators
-        std::swap(data[i++], data[j--]);
+        TYPE tmp = data[i];
+        data[i] = data[j];
+        data[j] = tmp;
+        i++;
+        j--;
     }
 
     //Sort left sub-array
@@ -65,9 +69,9 @@ void quicksort(TYPE *data, int dataSize) {
 }
 
 template void quicksort<int>(int *, int);
-template void quicksort<float>(float *, int);
+/*template void quicksort<float>(float *, int);
 template void quicksort<double>(double *, int);
-template void quicksort<char>(char *, int);
+template void quicksort<char>(char *, int);*/
 
 //! Mergesort sorting
 template<typename TYPE>
@@ -114,6 +118,56 @@ void mergesort(TYPE *data, int dataSize) {
 }
 
 template void mergesort<int>(int *, int);
-template void mergesort<float>(float *, int);
+
+/*template void mergesort<float>(float *, int);
 template void mergesort<double>(double *, int);
-template void mergesort<char>(char *, int);
+template void mergesort<char>(char *, int);*/
+
+//! Creates a heap from data in array
+template<typename TYPE>
+void heapify(TYPE *tab, int tabSize, int parentIndex) {
+
+    int lChildIndex = parentIndex * 2 + 1; // left child index
+    int rChildIndex = parentIndex * 2 + 2; // right child index
+    int largestIndex = parentIndex; // index of the largest number in the sub-tree
+
+    // Paren must be larger than any child
+    if (lChildIndex <= tabSize - 1 && tab[lChildIndex] > tab[largestIndex])
+        largestIndex = lChildIndex;
+    if (rChildIndex <= tabSize - 1 && tab[rChildIndex] > tab[largestIndex])
+        largestIndex = rChildIndex;
+
+    // Swap parent with the largest child
+    if (largestIndex != parentIndex) {
+        std::swap(tab[parentIndex], tab[largestIndex]);
+
+        // Heapify the modified sub-tree
+        heapify(tab, tabSize, largestIndex);
+    }
+}
+
+template void heapify<int>(int *, int, int);
+
+//! Heapsort sorting
+template<typename TYPE>
+void heapsort(TYPE *data, int dataSize) {
+    // Heapify entire array from the bottom
+    for (int i = 0; i <= dataSize/2; i++)
+    {
+        heapify(data, dataSize, dataSize/2 - i);
+    }
+
+    // Heapify entire array from the top
+    for(int i = 1; i < dataSize; i++) {
+        // Move sorted number to the end of the array
+        std::swap(data[0], data[dataSize - i]);
+        // Heapify the unsorted part of the array
+        heapify(data, dataSize - i, 0);
+    }
+
+}
+
+template void heapsort<int>(int *, int);
+/*template void heapsort<float>(float *, int);
+template void heapsort<double>(double *, int);
+template void heapsort<char>(char *, int);*/

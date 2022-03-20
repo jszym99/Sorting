@@ -18,4 +18,12 @@ void quicksort(TYPE * data, int dataSize);
 template<typename TYPE>
 void mergesort(TYPE * data, int dataSize);
 
+//! Creates a heap from data in array
+template<typename TYPE>
+void heapify(TYPE *tab, int tabSize, int root);
+
+//! Heapsort sorting
+template<typename TYPE>
+void heapsort(TYPE * data, int dataSize);
+
 #endif //SORTING_SORT_H

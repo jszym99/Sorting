@@ -83,7 +83,7 @@ int main() {
     std::cout << "Before sorting: ";
     printTab(data, dataSize);
     std::cout << "After sorting: ";
-    mergesort<int> (data, dataSize);
+    heapsort<int> (data, dataSize);
     printTab(data, dataSize);
 
 }
