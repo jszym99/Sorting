@@ -12,18 +12,18 @@ void printTab(TYPE * tab, int Size);
 
 //! Quicksort sorting
 template<typename TYPE>
-void quicksort(TYPE * data, int dataSize);
+void quicksort(TYPE * data, int dataSize, bool dwn = false);
 
 //! Mergesort sorting
 template<typename TYPE>
-void mergesort(TYPE * data, int dataSize);
+void mergesort(TYPE * data, int dataSize, bool dwn = false);
 
 //! Creates a heap from data in array
 template<typename TYPE>
-void heapify(TYPE *tab, int tabSize, int root);
+void heapify(TYPE *tab, int tabSize, int root, bool dwn);
 
 //! Heapsort sorting
 template<typename TYPE>
-void heapsort(TYPE * data, int dataSize);
+void heapsort(TYPE * data, int dataSize, bool dwn = false);
 
 #endif //SORTING_SORT_H

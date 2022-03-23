@@ -23,7 +23,7 @@ template void printTab<char>(char *, int);
 
 //! Quicksort sorting
 template<typename TYPE>
-void quicksort(TYPE *data, int dataSize) {
+void quicksort(TYPE *data, int dataSize, bool dwn) {
 
     // If table size is 1 it is sorted
     if (dataSize <= 1)
@@ -39,10 +39,10 @@ void quicksort(TYPE *data, int dataSize) {
     while (i < j && pivot != start && pivot != end) {
 
         // going from the left
-        while (data[i] < data[pivot] && i < j)
+        while ((!dwn*(data[i] < data[pivot]) || dwn*(data[i] > data[pivot])) && i < j)
             i++;
         // Going from the right
-        while (data[j] > data[pivot] && i < j)
+        while ((!dwn*(data[j] > data[pivot]) || dwn*(data[j] < data[pivot])) && i < j)
             j--;
 
         // Move pivot if needed
@@ -61,21 +61,21 @@ void quicksort(TYPE *data, int dataSize) {
 
     //Sort left sub-array
     if (pivot != start)
-        quicksort<TYPE>(data, pivot);
+        quicksort<TYPE>(data, pivot, dwn);
     //Sort right sub-array
     if (pivot != end)
-        quicksort<TYPE>(&data[pivot + 1], end - pivot);
+        quicksort<TYPE>(&data[pivot + 1], end - pivot, dwn);
 
 }
 
-template void quicksort<int>(int *, int);
+template void quicksort<int>(int *, int, bool);
 /*template void quicksort<float>(float *, int);
 template void quicksort<double>(double *, int);
 template void quicksort<char>(char *, int);*/
 
 //! Mergesort sorting
 template<typename TYPE>
-void mergesort(TYPE *data, int dataSize) {
+void mergesort(TYPE *data, int dataSize, bool dwn) {
 
     // If table size is 1 it is sorted
     if (dataSize <= 1)
@@ -96,10 +96,10 @@ void mergesort(TYPE *data, int dataSize) {
 
     //Sort left sublist
     if (mid > start)
-        mergesort<TYPE>(&leftSublist[0], mid);
+        mergesort<TYPE>(&leftSublist[0], mid, dwn);
     //Sort right sublist
     if (mid <= end)
-        mergesort<TYPE>(&rightSublist[0], dataSize - mid);
+        mergesort<TYPE>(&rightSublist[0], dataSize - mid, dwn);
 
     int l = 0; // Left sublist iterator
     int r = 0; // Right sublist iterator
@@ -110,14 +110,14 @@ void mergesort(TYPE *data, int dataSize) {
             data[i] = rightSublist[r++]; // Copy remaining data
         else if (r >= dataSize - mid) // Right sublist is empty
             data[i] = leftSublist[l++]; // Copy remaining data
-        else if (leftSublist[l] <= rightSublist[r])
+        else if (!dwn*(leftSublist[l] <= rightSublist[r]) || dwn*(leftSublist[l] > rightSublist[r]))
             data[i] = leftSublist[l++];
-        else if (rightSublist[r] < leftSublist[l])
+        else if (!dwn*(leftSublist[l] > rightSublist[r]) || dwn*(leftSublist[l] <= rightSublist[r]))
             data[i] = rightSublist[r++];
     }
 }
 
-template void mergesort<int>(int *, int);
+template void mergesort<int>(int *, int, bool);
 
 /*template void mergesort<float>(float *, int);
 template void mergesort<double>(double *, int);
@@ -125,36 +125,36 @@ template void mergesort<char>(char *, int);*/
 
 //! Creates a heap from data in array
 template<typename TYPE>
-void heapify(TYPE *tab, int tabSize, int parentIndex) {
+void heapify(TYPE *tab, int tabSize, int parentIndex, bool dwn) {
 
     int lChildIndex = parentIndex * 2 + 1; // left child index
     int rChildIndex = parentIndex * 2 + 2; // right child index
-    int largestIndex = parentIndex; // index of the largest number in the sub-tree
+    int maxIndex = parentIndex; // index of the largest number in the sub-tree
 
     // Paren must be larger than any child
-    if (lChildIndex <= tabSize - 1 && tab[lChildIndex] > tab[largestIndex])
-        largestIndex = lChildIndex;
-    if (rChildIndex <= tabSize - 1 && tab[rChildIndex] > tab[largestIndex])
-        largestIndex = rChildIndex;
+    if (lChildIndex <= tabSize - 1 && (!dwn*(tab[lChildIndex] > tab[maxIndex]) || dwn*(tab[lChildIndex] < tab[maxIndex])))
+        maxIndex = lChildIndex;
+    if (rChildIndex <= tabSize - 1 && (!dwn*(tab[rChildIndex] > tab[maxIndex]) || dwn*(tab[rChildIndex] < tab[maxIndex])))
+        maxIndex = rChildIndex;
 
     // Swap parent with the largest child
-    if (largestIndex != parentIndex) {
-        std::swap(tab[parentIndex], tab[largestIndex]);
+    if (maxIndex != parentIndex) {
+        std::swap(tab[parentIndex], tab[maxIndex]);
 
         // Heapify the modified sub-tree
-        heapify(tab, tabSize, largestIndex);
+        heapify(tab, tabSize, maxIndex, dwn);
     }
 }
 
-template void heapify<int>(int *, int, int);
+template void heapify<int>(int *, int, int, bool);
 
 //! Heapsort sorting
 template<typename TYPE>
-void heapsort(TYPE *data, int dataSize) {
+void heapsort(TYPE *data, int dataSize, bool dwn) {
     // Heapify entire array from the bottom
     for (int i = 0; i <= dataSize/2; i++)
     {
-        heapify(data, dataSize, dataSize/2 - i);
+        heapify(data, dataSize, dataSize/2 - i, dwn);
     }
 
     // Heapify entire array from the top
@@ -162,12 +162,12 @@ void heapsort(TYPE *data, int dataSize) {
         // Move sorted number to the end of the array
         std::swap(data[0], data[dataSize - i]);
         // Heapify the unsorted part of the array
-        heapify(data, dataSize - i, 0);
+        heapify(data, dataSize - i, 0, dwn);
     }
 
 }
 
-template void heapsort<int>(int *, int);
+template void heapsort<int>(int *, int, bool);
 /*template void heapsort<float>(float *, int);
 template void heapsort<double>(double *, int);
 template void heapsort<char>(char *, int);*/

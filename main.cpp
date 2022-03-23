@@ -59,8 +59,8 @@ void quicksort(int *tab, int tabSize) {
 
 int main() {
     int data[]{6, 1, 9, 2, 1, 0, 3, 6, 8, 2};
-    float data2[] {1, 4.8, 6, -1.1, 6, -5, 9, 2, 0.5, -4 };
-    char data3[] {'a', 'g', 't', 'n', 'l', 'i','p','s','b', 'w',};
+    //float data2[] {1, 4.8, 6, -1.1, 6, -5, 9, 2, 0.5, -4 };
+    //char data3[] {'a', 'g', 't', 'n', 'l', 'i','p','s','b', 'w',};
     int dataSize = 10;
     /*std::cout << "Before sorting: ";
     printTab(data, dataSize);
