@@ -3,4 +3,4 @@ project(Sorting)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(Sorting main.cpp sort.cpp sort.h)
+add_executable(Sorting main.cpp sort.cpp sort.h tools.cpp tools.h)
