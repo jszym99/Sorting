@@ -9,22 +9,46 @@
 // Depth from which quicksort is no longer used
 #define qcDepth 0
 
+//! Calculates median of 3 elements in the array
+template<typename TYPE>
+int medianOf3(TYPE * data, int dataSize, bool dwn)
+{
+    int start = 0;
+    int end = dataSize - 1;
+    int a = (start + dataSize) / 2, b = start, c = end;
+    if (data[c] < data[a])
+        swap(data[c], data[a]);
+    if (data[b] < data[a])
+        swap(data[b], data[a]);
+    if (data[c] < data[b])
+        swap(data[c], data[b]);
+
+    return partition(data, dataSize, dwn);
+}
+template int medianOf3 <int>(int *, int, bool);
+/*template int medianOf3<float>(int *, int, bool);
+template int medianOf3<double>(int *, int, bool);
+template int medianOf3<char>(int *, int, bool);*/
+
 //! Partitions an array for quick sorting
 template<typename TYPE>
 int partition(TYPE *data, int dataSize, bool dwn) {
     int start = 0; // Start index
     int end = dataSize - 1; // End index
     int pivot = data[start]; // Take first element of the array as a pivot value
-    int pivotIndex = 0; //Pivot index
+    int pivotIndex = start; //Pivot index
 
     // Move pivot to the center
-    for(int i = start; i < end;i++)
+    for(int i = start+1; i <= end;i++)
     {
-        if(data[i+1] <= pivot)
+        if(!dwn*(data[i] <= pivot) || dwn*(data[i] >= pivot))
             pivotIndex++;
     }
-    // Swap two values
+
     swap(data[pivotIndex],data[start]);
+    /*TYPE tmp = data[pivotIndex];
+    data[pivotIndex] = data[start];
+    data[start] = tmp;*/
 
     int i = start; // Iteration from the left
     int j = end; // Iteration from the right
@@ -34,13 +58,20 @@ int partition(TYPE *data, int dataSize, bool dwn) {
     while(i < pivotIndex && j > pivotIndex)
     {
         // going from the left
-        while(data[i] <= pivot)
+        while(!dwn*(data[i] <= pivot) || dwn*(data[i] >= pivot))
             i++;
         // going from the right
-        while(data[j] > pivot)
+        while(!dwn*(data[j] > pivot) || dwn*(data[j] < pivot))
             j--;
-        if (i < pivotIndex && j > pivotIndex)
-            swap(data[i++],data[j--]);
+        // swap values
+        if (i < pivotIndex && j > pivotIndex) {
+            swap(data[i++], data[j--]);
+            /*TYPE tmp = data[i];
+            data[i] = data[j];
+            data[j] = tmp;
+            i++;
+            j--;*/
+        }
     }
     return pivotIndex;
 }
@@ -57,18 +88,13 @@ void quicksort(TYPE *data, int dataSize, bool dwn) {
         if (dataSize <= 1)
             return;
 
-    int start = 0; // Start index
-    int end = dataSize - 1; // End index
-
     // Divide the array
-    int pivot = partition(data,dataSize,dwn);
+    int pivot = medianOf3(data, dataSize, dwn);
 
     //Sort left sub-array
-    if (pivot != start)
-        quicksort<TYPE>(data, pivot, dwn);
+    quicksort<TYPE>(data, pivot, dwn);
     //Sort right sub-array
-    if (pivot != end)
-        quicksort<TYPE>(&data[pivot + 1], end - pivot, dwn);
+    quicksort<TYPE>(&data[pivot + 1], dataSize - (pivot + 1), dwn);
 
 }
 
@@ -90,11 +116,11 @@ void mergesort(TYPE *data, int dataSize, bool dwn) {
     int mid = dataSize / 2;
 
     // Copy data to two separate sublists
-    TYPE leftSublist[mid]; // Left part sublist (start to middle)
+    TYPE *leftSublist = new TYPE[mid]; // Left part sublist (start to middle)
     for (int i = 0; i < mid; i++)
         leftSublist[i] = data[i];
 
-    TYPE rightSublist[dataSize - mid]; // Right sublist (middle to end)
+    TYPE *rightSublist = new TYPE[dataSize - mid]; // Right sublist (middle to end)
     for (int i = 0; i < dataSize - mid; i++)
         rightSublist[i] = data[mid + i];
 
@@ -119,6 +145,8 @@ void mergesort(TYPE *data, int dataSize, bool dwn) {
         else if (!dwn*(leftSublist[l] > rightSublist[r]) || dwn*(leftSublist[l] <= rightSublist[r]))
             data[i] = rightSublist[r++];
     }
+    delete [] rightSublist;
+    delete [] leftSublist;
 }
 
 template void mergesort<int>(int *, int, bool);
@@ -203,9 +231,6 @@ template void insertsort<char>(int *, int, bool);*/
 template<typename TYPE>
 void introsort(TYPE * data, int dataSize,int depth, bool dwn)
 {
-    int start = 0; // Start index
-    int end = dataSize - 1; // End index
-
     if(dataSize < useInsert) {
         insertsort(data, dataSize, dwn);
         return;
@@ -216,20 +241,25 @@ void introsort(TYPE * data, int dataSize,int depth, bool dwn)
         {
             heapify(data, dataSize, dataSize/2 - i, dwn);
         }
-        swap(data[0], data[dataSize - 1]);
-        //printTab(data,dataSize);
-        introsort(data,dataSize-1, depth, dwn);
+
+        // Heapify entire array from the top
+        for(int i = 1; i < dataSize; i++) {
+            if(dataSize < useInsert)
+                introsort(data, dataSize, depth-1, dwn);
+            // Move sorted number to the end of the array
+            swap(data[0], data[dataSize - i]);
+            // Heapify the unsorted part of the array
+            heapify(data, dataSize - i, 0, dwn);
+        }
 
     } else {
         // Divide the array
-        int pivot = partition(data, dataSize, dwn);
+        int pivot = medianOf3(data, dataSize, dwn);
 
         //Sort left sub-array
-        if (pivot != start)
-            introsort<TYPE>(data, pivot, depth-1, dwn);
+        introsort<TYPE>(data, pivot, depth-1, dwn);
         //Sort right sub-array
-        if (pivot != end)
-            introsort<TYPE>(&data[pivot + 1], end - pivot, depth-1, dwn);
+        introsort<TYPE>(&data[pivot + 1], dataSize - (pivot + 1), depth-1, dwn);
     }
 
 }

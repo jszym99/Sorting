@@ -7,6 +7,9 @@
 #include "tools.h"
 #define SORTING_SORT_H
 
+//! Calculates median of 3 elements in the array
+template<typename TYPE>
+int medianOf3(TYPE * data, int dataSize, bool dwn);
 
 //! Partitions an array for quick sorting
 template<typename TYPE>
